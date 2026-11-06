@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { authFetch } from "@/lib/api";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -82,13 +83,16 @@ export default function AddBookPage() {
       };
 
       // Save book to MongoDB
-       const response = await authFetch("https://booknook-server-bzvz.onrender.com/books", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bookData),
-      });
+      const response = await authFetch(
+        "https://booknook-server-bzvz.onrender.com/books",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(bookData),
+        }
+      );
 
       const result = await response.json();
 
@@ -150,7 +154,7 @@ export default function AddBookPage() {
                 name="title"
                 placeholder="Enter book title"
                 required
-                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 outline-none focus:border-[#264735]"
+                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 !text-[#26332b] placeholder:!text-[#99998f] outline-none focus:border-[#264735]"
               />
             </div>
 
@@ -163,7 +167,7 @@ export default function AddBookPage() {
                 name="author"
                 placeholder="Enter author name"
                 required
-                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 outline-none focus:border-[#264735]"
+                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 !text-[#26332b] placeholder:!text-[#99998f] outline-none focus:border-[#264735]"
               />
             </div>
 
@@ -175,7 +179,7 @@ export default function AddBookPage() {
                 name="category"
                 required
                 defaultValue=""
-                className="w-full rounded-xl border border-[#e8e3d8] bg-white px-4 py-3 outline-none focus:border-[#264735]"
+                className="w-full rounded-xl border border-[#e8e3d8] bg-white px-4 py-3 !text-[#26332b] outline-none focus:border-[#264735]"
               >
                 <option value="" disabled>
                   Select a category
@@ -217,11 +221,16 @@ export default function AddBookPage() {
                   <p className="mb-2 text-sm font-medium text-[#264735]">
                     Image Preview
                   </p>
-                  <img
+                  <div className="relative h-48 w-full rounded-xl bg-[#f8f6f0]">
+                    <Image
                     src={preview}
                     alt="Book preview"
-                    className="h-48 w-full rounded-xl object-contain bg-[#f8f6f0]"
-                  />
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="rounded-xl object-contain"
+                    unoptimized
+                    />
+                  </div>
                   <p className="mt-2 text-sm text-green-700">
                     {selectedImage?.name}
                   </p>
@@ -238,7 +247,7 @@ export default function AddBookPage() {
                 rows="4"
                 placeholder="Write a short description about the book..."
                 required
-                className="w-full resize-none rounded-xl border border-[#e8e3d8] px-4 py-3 outline-none focus:border-[#264735]"
+                className="w-full resize-none rounded-xl border border-[#e8e3d8] px-4 py-3 !text-[#26332b] placeholder:!text-[#99998f] outline-none focus:border-[#264735]"
               />
             </div>
 
@@ -252,7 +261,7 @@ export default function AddBookPage() {
                 min="1"
                 defaultValue="1"
                 required
-                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 outline-none focus:border-[#264735]"
+                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 !text-[#26332b] outline-none focus:border-[#264735]"
               />
             </div>
 
@@ -294,3 +303,5 @@ export default function AddBookPage() {
     </ProtectedRoute>
   );
 }
+
+
