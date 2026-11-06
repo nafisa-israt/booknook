@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,7 +8,7 @@ import Image from "next/image";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-hot-toast";
-import { BookOpen, Pencil, Trash2, X } from "lucide-react";
+import { BookOpen, Pencil, Trash2, X, Upload } from "lucide-react";
 
 function MyBooksContent() {
   const { data: session } = authClient.useSession();
@@ -18,6 +19,8 @@ function MyBooksContent() {
   const [editingBook, setEditingBook] = useState(null);
   const [deletingBook, setDeletingBook] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [preview, setPreview] = useState("");
 
   useEffect(() => {
     if (!user?.email) return;
@@ -53,21 +56,71 @@ function MyBooksContent() {
     };
   }, [user?.email]);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image!");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size must be less than 5MB!");
+      e.target.value = "";
+      return;
+    }
+
+    setSelectedImage(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
+  const openEditModal = (book) => {
+    setEditingBook(book);
+    setSelectedImage(null);
+    setPreview(book.image || "");
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     setSaving(true);
 
     const form = e.target;
 
-    const updatedBook = {
-      title: form.title.value.trim(),
-      author: form.author.value.trim(),
-      category: form.category.value,
-      image: form.image.value.trim(),
-      description: form.description.value.trim(),
-    };
-
     try {
+      let imageUrl = editingBook.image;
+
+      // Upload a new image only if selected
+      if (selectedImage) {
+        const imageData = new FormData();
+        imageData.append("image", selectedImage);
+
+        const imageResponse = await fetch(
+          `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+          {
+            method: "POST",
+            body: imageData,
+          }
+        );
+
+        const uploadedImage = await imageResponse.json();
+
+        if (!imageResponse.ok || !uploadedImage.success) {
+          throw new Error("Image upload failed!");
+        }
+
+        imageUrl = uploadedImage.data.display_url;
+      }
+
+      const updatedBook = {
+        title: form.title.value.trim(),
+        author: form.author.value.trim(),
+        category: form.category.value,
+        image: imageUrl,
+        description: form.description.value.trim(),
+      };
+
       const response = await fetch(
         `http://localhost:5000/books/${editingBook._id}`,
         {
@@ -94,9 +147,11 @@ function MyBooksContent() {
       );
 
       setEditingBook(null);
+      setSelectedImage(null);
+      setPreview("");
       toast.success("Book updated successfully!");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message || "Something went wrong!");
     } finally {
       setSaving(false);
     }
@@ -190,7 +245,7 @@ function MyBooksContent() {
 
                 <div className="mt-5 flex gap-3">
                   <button
-                    onClick={() => setEditingBook(book)}
+                    onClick={() => openEditModal(book)}
                     className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#264735] py-3 text-sm font-semibold text-white hover:bg-[#355c43]"
                   >
                     <Pencil size={16} />
@@ -215,7 +270,11 @@ function MyBooksContent() {
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 px-4 py-6">
           <div className="relative my-auto w-full max-w-lg rounded-2xl bg-white p-6">
             <button
-              onClick={() => setEditingBook(null)}
+              onClick={() => {
+                setEditingBook(null);
+                setSelectedImage(null);
+                setPreview("");
+              }}
               className="absolute right-5 top-5 text-gray-500"
             >
               <X size={22} />
@@ -254,13 +313,42 @@ function MyBooksContent() {
                 <option value="Others">Others</option>
               </select>
 
-              <input
-                name="image"
-                defaultValue={editingBook.image}
-                placeholder="Image URL"
-                required
-                className="w-full rounded-lg border px-4 py-3"
-              />
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-[#264735]">
+                  Book Image
+                </label>
+
+                <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#c9d5ca] bg-[#f8f6f0] px-5 py-6 text-center hover:border-[#264735]">
+                  <Upload size={27} className="mb-2 text-[#264735]" />
+                  <span className="font-semibold text-[#264735]">
+                    Choose New Image
+                  </span>
+                  <span className="mt-1 text-xs text-[#77776b]">
+                    JPG, PNG (Max 5MB)
+                  </span>
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </label>
+
+                {preview && (
+                  <img
+                    src={preview}
+                    alt="Book preview"
+                    className="mt-4 h-40 w-full rounded-xl bg-[#f8f6f0] object-contain"
+                  />
+                )}
+
+                {!selectedImage && (
+                  <p className="mt-2 text-xs text-[#77776b]">
+                    Keep the current image or select a new one.
+                  </p>
+                )}
+              </div>
 
               <textarea
                 name="description"
@@ -276,7 +364,7 @@ function MyBooksContent() {
                 disabled={saving}
                 className="w-full rounded-xl bg-[#264735] py-3 font-semibold text-white hover:bg-[#bd704d] disabled:opacity-50"
               >
-                {saving ? "Saving..." : "Save Changes"}
+                {saving ? "Uploading & Saving..." : "Save Changes"}
               </button>
             </form>
           </div>
