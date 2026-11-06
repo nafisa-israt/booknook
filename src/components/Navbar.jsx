@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { BookOpen, ChevronDown, LogOut, User } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
@@ -49,9 +50,21 @@ export default function Navbar() {
         <div className="hidden items-center gap-8 text-sm font-medium text-[#263d32] md:flex">
           <Link href="/" className="hover:text-[#bd704d]">Home</Link>
           <Link href="/books" className="hover:text-[#bd704d]">All Books</Link>
-          <Link href="/add-book" className="hover:text-[#bd704d]">Add Book</Link>
-          <Link href="/my-books" className="hover:text-[#bd704d]">My Books</Link>
-          <Link href="/my-borrows" className="hover:text-[#bd704d]">My Borrows</Link>
+        {user && (
+  <>
+    <Link href="/add-book" className="hover:text-[#bd704d]">
+      Add Book
+    </Link>
+
+    <Link href="/my-books" className="hover:text-[#bd704d]">
+      My Books
+    </Link>
+
+    <Link href="/my-borrows" className="hover:text-[#bd704d]">
+      My Borrows
+    </Link>
+  </>
+)}
         </div>
 
         {isPending ? (
@@ -62,11 +75,9 @@ export default function Navbar() {
               onClick={() => setDropdownOpen(!dropdownOpen)}
               className="flex items-center gap-2 rounded-full border border-[#e8e3d8] bg-white px-3 py-2"
             >
-              <img
-                src={user.image || "https://i.pravatar.cc/100"}
-                alt="Profile"
-                className="h-8 w-8 rounded-full object-cover"
-              />
+             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#264735] text-sm font-bold text-white">
+  {user.name?.charAt(0).toUpperCase() || "U"}
+</div>
               <span className="max-w-24 truncate text-sm font-semibold text-[#263d32]">
                 {user.name}
               </span>
