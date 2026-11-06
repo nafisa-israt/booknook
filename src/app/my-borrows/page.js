@@ -1,10 +1,12 @@
 
+
 "use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { authClient } from "@/lib/auth-client";
+import { authFetch } from "@/lib/api";
 import { toast } from "react-hot-toast";
 import { BookOpen, RotateCcw } from "lucide-react";
 
@@ -16,6 +18,7 @@ function MyBorrowsContent() {
   const [loading, setLoading] = useState(true);
   const [returningId, setReturningId] = useState(null);
 
+  // Load borrowed books using JWT
   useEffect(() => {
     if (!user?.email) return;
 
@@ -23,8 +26,8 @@ function MyBorrowsContent() {
 
     const loadBorrows = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/borrows?email=${encodeURIComponent(user.email)}`
+        const response = await authFetch(
+          "http://localhost:5000/borrows"
         );
 
         if (!response.ok) {
@@ -50,6 +53,7 @@ function MyBorrowsContent() {
     };
   }, [user?.email]);
 
+  // Return book using JWT
   const handleReturn = async (borrowId) => {
     if (!window.confirm("Are you sure you want to return this book?")) {
       return;
@@ -58,9 +62,11 @@ function MyBorrowsContent() {
     setReturningId(borrowId);
 
     try {
-      const response = await fetch(
+      const response = await authFetch(
         `http://localhost:5000/borrows/${borrowId}`,
-        { method: "DELETE" }
+        {
+          method: "DELETE",
+        }
       );
 
       const data = await response.json();

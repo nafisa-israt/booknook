@@ -1,10 +1,10 @@
 
-
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { authFetch } from "@/lib/api";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-hot-toast";
@@ -22,6 +22,7 @@ function MyBooksContent() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [preview, setPreview] = useState("");
 
+  // Fetch user's books
   useEffect(() => {
     if (!user?.email) return;
 
@@ -56,6 +57,7 @@ function MyBooksContent() {
     };
   }, [user?.email]);
 
+  // Select image
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
 
@@ -76,12 +78,14 @@ function MyBooksContent() {
     setPreview(URL.createObjectURL(file));
   };
 
+  // Open edit modal
   const openEditModal = (book) => {
     setEditingBook(book);
     setSelectedImage(null);
     setPreview(book.image || "");
   };
 
+  // Update book
   const handleUpdate = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -91,7 +95,7 @@ function MyBooksContent() {
     try {
       let imageUrl = editingBook.image;
 
-      // Upload a new image only if selected
+      // Upload new image if selected
       if (selectedImage) {
         const imageData = new FormData();
         imageData.append("image", selectedImage);
@@ -121,7 +125,8 @@ function MyBooksContent() {
         description: form.description.value.trim(),
       };
 
-      const response = await fetch(
+      // JWT protected PATCH request
+      const response = await authFetch(
         `http://localhost:5000/books/${editingBook._id}`,
         {
           method: "PATCH",
@@ -149,6 +154,7 @@ function MyBooksContent() {
       setEditingBook(null);
       setSelectedImage(null);
       setPreview("");
+
       toast.success("Book updated successfully!");
     } catch (error) {
       toast.error(error.message || "Something went wrong!");
@@ -157,11 +163,15 @@ function MyBooksContent() {
     }
   };
 
+  // Delete book
   const handleDelete = async () => {
     try {
-      const response = await fetch(
+      // JWT protected DELETE request
+      const response = await authFetch(
         `http://localhost:5000/books/${deletingBook._id}`,
-        { method: "DELETE" }
+        {
+          method: "DELETE",
+        }
       );
 
       const data = await response.json();
@@ -266,6 +276,7 @@ function MyBooksContent() {
         </div>
       )}
 
+      {/* Edit Modal */}
       {editingBook && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 px-4 py-6">
           <div className="relative my-auto w-full max-w-lg rounded-2xl bg-white p-6">
@@ -320,9 +331,11 @@ function MyBooksContent() {
 
                 <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#c9d5ca] bg-[#f8f6f0] px-5 py-6 text-center hover:border-[#264735]">
                   <Upload size={27} className="mb-2 text-[#264735]" />
+
                   <span className="font-semibold text-[#264735]">
                     Choose New Image
                   </span>
+
                   <span className="mt-1 text-xs text-[#77776b]">
                     JPG, PNG (Max 5MB)
                   </span>
@@ -336,9 +349,12 @@ function MyBooksContent() {
                 </label>
 
                 {preview && (
-                  <img
+                  <Image
                     src={preview}
                     alt="Book preview"
+                    width={640}
+                    height={320}
+                    unoptimized
                     className="mt-4 h-40 w-full rounded-xl bg-[#f8f6f0] object-contain"
                   />
                 )}
@@ -371,6 +387,7 @@ function MyBooksContent() {
         </div>
       )}
 
+      {/* Delete Confirmation Modal */}
       {deletingBook && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
           <div className="w-full max-w-sm rounded-2xl bg-white p-7 text-center">
@@ -425,3 +442,5 @@ export default function MyBooksPage() {
     </ProtectedRoute>
   );
 }
+
+

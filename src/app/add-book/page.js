@@ -1,38 +1,88 @@
+
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { authFetch } from "@/lib/api";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import toast from "react-hot-toast";
-import { BookPlus } from "lucide-react";
+import { BookPlus, Upload, ImagePlus } from "lucide-react";
 
 export default function AddBookPage() {
   const { data: session } = authClient.useSession();
   const router = useRouter();
+
   const [loading, setLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [preview, setPreview] = useState("");
 
   const user = session?.user;
 
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image!");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size must be less than 5MB!");
+      e.target.value = "";
+      return;
+    }
+
+    setSelectedImage(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!selectedImage) {
+      toast.error("Please upload a book image!");
+      return;
+    }
+
     setLoading(true);
 
     const form = e.target;
 
-    const bookData = {
-      title: form.title.value.trim(),
-      author: form.author.value.trim(),
-      category: form.category.value,
-      image: form.image.value.trim(),
-      description: form.description.value.trim(),
-      totalCopies: Number(form.totalCopies.value),
-      addedBy: user?.name,
-      addedByEmail: user?.email,
-    };
-
     try {
-      const response = await fetch("http://localhost:5000/books", {
+      // Upload image to ImgBB
+      const imageData = new FormData();
+      imageData.append("image", selectedImage);
+
+      const imageResponse = await fetch(
+        `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+        {
+          method: "POST",
+          body: imageData,
+        }
+      );
+
+      const uploadedImage = await imageResponse.json();
+
+      if (!imageResponse.ok || !uploadedImage.success) {
+        throw new Error("Image upload failed!");
+      }
+
+      const bookData = {
+        title: form.title.value.trim(),
+        author: form.author.value.trim(),
+        category: form.category.value,
+        image: uploadedImage.data.display_url,
+        description: form.description.value.trim(),
+        totalCopies: Number(form.totalCopies.value),
+        addedBy: user?.name,
+        addedByEmail: user?.email,
+      };
+
+      // Save book to MongoDB
+       const response = await authFetch("http://localhost:5000/books", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +97,11 @@ export default function AddBookPage() {
       }
 
       toast.success("Book added successfully!");
+
       form.reset();
+      setSelectedImage(null);
+      setPreview("");
+
       router.push("/books");
       router.refresh();
     } catch (error) {
@@ -136,15 +190,43 @@ export default function AddBookPage() {
 
             <div>
               <label className="mb-2 block text-sm font-semibold text-[#264735]">
-                Book Image URL *
+                Book Image *
               </label>
-              <input
-                type="url"
-                name="image"
-                placeholder="https://example.com/book-image.jpg"
-                required
-                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 outline-none focus:border-[#264735]"
-              />
+
+              <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#c9d5ca] bg-[#f8f6f0] px-5 py-8 text-center transition hover:border-[#264735]">
+                <Upload size={30} className="mb-3 text-[#264735]" />
+
+                <span className="font-semibold text-[#264735]">
+                  Choose Book Image
+                </span>
+
+                <span className="mt-1 text-sm text-[#77776b]">
+                  JPG, PNG or other image formats (Max 5MB)
+                </span>
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
+
+              {preview && (
+                <div className="mt-4">
+                  <p className="mb-2 text-sm font-medium text-[#264735]">
+                    Image Preview
+                  </p>
+                  <img
+                    src={preview}
+                    alt="Book preview"
+                    className="h-48 w-full rounded-xl object-contain bg-[#f8f6f0]"
+                  />
+                  <p className="mt-2 text-sm text-green-700">
+                    {selectedImage?.name}
+                  </p>
+                </div>
+              )}
             </div>
 
             <div>
@@ -201,9 +283,10 @@ export default function AddBookPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-[#264735] py-4 font-semibold text-white transition hover:bg-[#bd704d] disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#264735] py-4 font-semibold text-white transition hover:bg-[#bd704d] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Adding Book..." : "Add Book to BoiGhor"}
+              <ImagePlus size={20} />
+              {loading ? "Uploading & Adding Book..." : "Add Book to BoiGhor"}
             </button>
           </form>
         </div>

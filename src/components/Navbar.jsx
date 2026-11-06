@@ -2,7 +2,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useState } from "react";
 import { BookOpen, ChevronDown, LogOut, User } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
@@ -37,6 +36,7 @@ export default function Navbar() {
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#264735] text-[#f5e9d3]">
             <BookOpen size={23} />
           </div>
+
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-[#263d32]">
               বইঘর<span className="text-[#c47751]">.</span>
@@ -48,23 +48,29 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden items-center gap-8 text-sm font-medium text-[#263d32] md:flex">
-          <Link href="/" className="hover:text-[#bd704d]">Home</Link>
-          <Link href="/books" className="hover:text-[#bd704d]">All Books</Link>
-        {user && (
-  <>
-    <Link href="/add-book" className="hover:text-[#bd704d]">
-      Add Book
-    </Link>
+          <Link href="/" className="hover:text-[#bd704d]">
+            Home
+          </Link>
 
-    <Link href="/my-books" className="hover:text-[#bd704d]">
-      My Books
-    </Link>
+          <Link href="/books" className="hover:text-[#bd704d]">
+            All Books
+          </Link>
 
-    <Link href="/my-borrows" className="hover:text-[#bd704d]">
-      My Borrows
-    </Link>
-  </>
-)}
+          {user && (
+            <>
+              <Link href="/add-book" className="hover:text-[#bd704d]">
+                Add Book
+              </Link>
+
+              <Link href="/my-books" className="hover:text-[#bd704d]">
+                My Books
+              </Link>
+
+              <Link href="/my-borrows" className="hover:text-[#bd704d]">
+                My Borrows
+              </Link>
+            </>
+          )}
         </div>
 
         {isPending ? (
@@ -75,12 +81,14 @@ export default function Navbar() {
               onClick={() => setDropdownOpen(!dropdownOpen)}
               className="flex items-center gap-2 rounded-full border border-[#e8e3d8] bg-white px-3 py-2"
             >
-             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#264735] text-sm font-bold text-white">
-  {user.name?.charAt(0).toUpperCase() || "U"}
-</div>
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#264735] text-sm font-bold text-white">
+                {user.name?.charAt(0).toUpperCase() || "U"}
+              </div>
+
               <span className="max-w-24 truncate text-sm font-semibold text-[#263d32]">
                 {user.name}
               </span>
+
               <ChevronDown size={16} />
             </button>
 
@@ -91,13 +99,16 @@ export default function Navbar() {
                   onClick={() => setDropdownOpen(false)}
                   className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[#263d32] hover:bg-[#f8f6f0]"
                 >
-                  <User size={16} /> My Profile
+                  <User size={16} />
+                  My Profile
                 </Link>
+
                 <button
                   onClick={handleLogout}
                   className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-600 hover:bg-red-50"
                 >
-                  <LogOut size={16} /> Logout
+                  <LogOut size={16} />
+                  Logout
                 </button>
               </div>
             )}
@@ -110,6 +121,7 @@ export default function Navbar() {
             >
               Login
             </Link>
+
             <Link
               href="/register"
               className="hidden rounded-full border border-[#264735] px-5 py-2.5 text-sm font-semibold text-[#264735] sm:block"
