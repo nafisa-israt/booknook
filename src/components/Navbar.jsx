@@ -1,0 +1,113 @@
+
+"use client";
+
+import Link from "next/link";
+import { useState } from "react";
+import { BookOpen, ChevronDown, LogOut, User } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+
+export default function Navbar() {
+  const { data: session, isPending } = authClient.useSession();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const { error } = await authClient.signOut();
+
+    if (error) {
+      toast.error("Logout failed!");
+      return;
+    }
+
+    toast.success("Logged out successfully!");
+    setDropdownOpen(false);
+    router.push("/login");
+    router.refresh();
+  };
+
+  const user = session?.user;
+
+  return (
+    <nav className="sticky top-0 z-50 border-b border-[#e8e3d8] bg-[#f8f6f0]/95 backdrop-blur-md">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-10">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#264735] text-[#f5e9d3]">
+            <BookOpen size={23} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-[#263d32]">
+              বইঘর<span className="text-[#c47751]">.</span>
+            </h1>
+            <p className="text-[9px] tracking-[3px] text-[#8b8b78]">
+              YOUR LITTLE LIBRARY
+            </p>
+          </div>
+        </Link>
+
+        <div className="hidden items-center gap-8 text-sm font-medium text-[#263d32] md:flex">
+          <Link href="/" className="hover:text-[#bd704d]">Home</Link>
+          <Link href="/books" className="hover:text-[#bd704d]">All Books</Link>
+          <Link href="/add-book" className="hover:text-[#bd704d]">Add Book</Link>
+          <Link href="/my-books" className="hover:text-[#bd704d]">My Books</Link>
+          <Link href="/my-borrows" className="hover:text-[#bd704d]">My Borrows</Link>
+        </div>
+
+        {isPending ? (
+          <div className="h-10 w-20 animate-pulse rounded-full bg-[#e8e3d8]" />
+        ) : user ? (
+          <div className="relative">
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="flex items-center gap-2 rounded-full border border-[#e8e3d8] bg-white px-3 py-2"
+            >
+              <img
+                src={user.image || "https://i.pravatar.cc/100"}
+                alt="Profile"
+                className="h-8 w-8 rounded-full object-cover"
+              />
+              <span className="max-w-24 truncate text-sm font-semibold text-[#263d32]">
+                {user.name}
+              </span>
+              <ChevronDown size={16} />
+            </button>
+
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-3 w-48 rounded-xl border border-[#e8e3d8] bg-white p-2 shadow-lg">
+                <Link
+                  href="/profile"
+                  onClick={() => setDropdownOpen(false)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[#263d32] hover:bg-[#f8f6f0]"
+                >
+                  <User size={16} /> My Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                >
+                  <LogOut size={16} /> Logout
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="rounded-full bg-[#264735] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#c47751]"
+            >
+              Login
+            </Link>
+            <Link
+              href="/register"
+              className="hidden rounded-full border border-[#264735] px-5 py-2.5 text-sm font-semibold text-[#264735] sm:block"
+            >
+              Register
+            </Link>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+}
