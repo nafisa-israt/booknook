@@ -1,9 +1,9 @@
 
+
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { authFetch } from "@/lib/api";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -121,6 +121,7 @@ export default function AddBookPage() {
       <main className="min-h-screen bg-[#f8f6f0] px-5 py-16">
         <div className="mx-auto max-w-3xl">
 
+          {/* Page Heading */}
           <div className="mb-10 text-center">
             <div className="mb-4 flex justify-center">
               <div className="rounded-2xl bg-[#264735] p-4 text-white">
@@ -141,49 +142,57 @@ export default function AddBookPage() {
             </p>
           </div>
 
+          {/* Add Book Form */}
           <form
             onSubmit={handleSubmit}
-            className="space-y-6 rounded-3xl border border-[#e8e3d8] bg-white p-7 shadow-sm md:p-10"
+            className="add-book-form space-y-6 rounded-3xl border border-[#e8e3d8] bg-white p-7 shadow-sm md:p-10"
           >
+            {/* Book Title */}
             <div>
               <label className="mb-2 block text-sm font-semibold text-[#264735]">
                 Book Title *
               </label>
+
               <input
                 type="text"
                 name="title"
                 placeholder="Enter book title"
                 required
-                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 !text-[#26332b] placeholder:!text-[#99998f] outline-none focus:border-[#264735]"
+                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 outline-none transition focus:border-[#264735] focus:ring-2 focus:ring-[#264735]/10"
               />
             </div>
 
+            {/* Author Name */}
             <div>
               <label className="mb-2 block text-sm font-semibold text-[#264735]">
                 Author Name *
               </label>
+
               <input
                 type="text"
                 name="author"
                 placeholder="Enter author name"
                 required
-                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 !text-[#26332b] placeholder:!text-[#99998f] outline-none focus:border-[#264735]"
+                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 outline-none transition focus:border-[#264735] focus:ring-2 focus:ring-[#264735]/10"
               />
             </div>
 
+            {/* Category */}
             <div>
               <label className="mb-2 block text-sm font-semibold text-[#264735]">
                 Category *
               </label>
+
               <select
                 name="category"
                 required
                 defaultValue=""
-                className="w-full rounded-xl border border-[#e8e3d8] bg-white px-4 py-3 !text-[#26332b] outline-none focus:border-[#264735]"
+                className="w-full rounded-xl border border-[#e8e3d8] bg-white px-4 py-3 outline-none transition focus:border-[#264735] focus:ring-2 focus:ring-[#264735]/10"
               >
                 <option value="" disabled>
                   Select a category
                 </option>
+
                 <option value="Fiction">Fiction</option>
                 <option value="Science">Science</option>
                 <option value="History">History</option>
@@ -192,6 +201,7 @@ export default function AddBookPage() {
               </select>
             </div>
 
+            {/* Book Image */}
             <div>
               <label className="mb-2 block text-sm font-semibold text-[#264735]">
                 Book Image *
@@ -221,16 +231,13 @@ export default function AddBookPage() {
                   <p className="mb-2 text-sm font-medium text-[#264735]">
                     Image Preview
                   </p>
-                  <div className="relative h-48 w-full rounded-xl bg-[#f8f6f0]">
-                    <Image
+
+                  <img
                     src={preview}
                     alt="Book preview"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="rounded-xl object-contain"
-                    unoptimized
-                    />
-                  </div>
+                    className="h-48 w-full rounded-xl bg-[#f8f6f0] object-contain"
+                  />
+
                   <p className="mt-2 text-sm text-green-700">
                     {selectedImage?.name}
                   </p>
@@ -238,42 +245,48 @@ export default function AddBookPage() {
               )}
             </div>
 
+            {/* Description */}
             <div>
               <label className="mb-2 block text-sm font-semibold text-[#264735]">
                 Short Description *
               </label>
+
               <textarea
                 name="description"
                 rows="4"
                 placeholder="Write a short description about the book..."
                 required
-                className="w-full resize-none rounded-xl border border-[#e8e3d8] px-4 py-3 !text-[#26332b] placeholder:!text-[#99998f] outline-none focus:border-[#264735]"
+                className="w-full resize-none rounded-xl border border-[#e8e3d8] px-4 py-3 outline-none transition focus:border-[#264735] focus:ring-2 focus:ring-[#264735]/10"
               />
             </div>
 
+            {/* Total Copies */}
             <div>
               <label className="mb-2 block text-sm font-semibold text-[#264735]">
                 Total Copies *
               </label>
+
               <input
                 type="number"
                 name="totalCopies"
                 min="1"
                 defaultValue="1"
                 required
-                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 !text-[#26332b] outline-none focus:border-[#264735]"
+                className="w-full rounded-xl border border-[#e8e3d8] px-4 py-3 outline-none transition focus:border-[#264735] focus:ring-2 focus:ring-[#264735]/10"
               />
             </div>
 
+            {/* User Information */}
             <div className="grid gap-5 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-semibold text-[#264735]">
                   Added By
                 </label>
+
                 <input
                   value={user?.name || ""}
                   readOnly
-                  className="w-full rounded-xl border border-[#e8e3d8] bg-[#f8f6f0] px-4 py-3 text-[#77776b]"
+                  className="w-full rounded-xl border border-[#e8e3d8] bg-[#f8f6f0] px-4 py-3"
                 />
               </div>
 
@@ -281,21 +294,26 @@ export default function AddBookPage() {
                 <label className="mb-2 block text-sm font-semibold text-[#264735]">
                   Email Address
                 </label>
+
                 <input
                   value={user?.email || ""}
                   readOnly
-                  className="w-full rounded-xl border border-[#e8e3d8] bg-[#f8f6f0] px-4 py-3 text-[#77776b]"
+                  className="w-full rounded-xl border border-[#e8e3d8] bg-[#f8f6f0] px-4 py-3"
                 />
               </div>
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#264735] py-4 font-semibold text-white transition hover:bg-[#bd704d] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <ImagePlus size={20} />
-              {loading ? "Uploading & Adding Book..." : "Add Book to BoiGhor"}
+
+              {loading
+                ? "Uploading & Adding Book..."
+                : "Add Book to BoiGhor"}
             </button>
           </form>
         </div>
@@ -303,5 +321,3 @@ export default function AddBookPage() {
     </ProtectedRoute>
   );
 }
-
-
