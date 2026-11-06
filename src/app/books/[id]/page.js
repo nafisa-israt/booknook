@@ -32,7 +32,7 @@ function BookDetailsContent() {
     const fetchBook = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/books/${id}`
+          `https://booknook-server-bzvz.onrender.com/books/${id}`
         );
 
         if (!response.ok) {
@@ -68,7 +68,7 @@ function BookDetailsContent() {
     setBorrowing(true);
 
     try {
-      const response = await authFetch("http://localhost:5000/borrows", {
+      const response = await authFetch("https://booknook-server-bzvz.onrender.com/borrows", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

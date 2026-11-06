@@ -30,7 +30,7 @@ function MyBooksContent() {
 
     const fetchBooks = async () => {
       try {
-        const response = await fetch("http://localhost:5000/books");
+        const response = await fetch("https://booknook-server-bzvz.onrender.com/books");
 
         if (!response.ok) {
           throw new Error("Failed to load books");
@@ -127,7 +127,7 @@ function MyBooksContent() {
 
       // JWT protected PATCH request
       const response = await authFetch(
-        `http://localhost:5000/books/${editingBook._id}`,
+        `https://booknook-server-bzvz.onrender.com/books/${editingBook._id}`,
         {
           method: "PATCH",
           headers: {
@@ -168,7 +168,7 @@ function MyBooksContent() {
     try {
       // JWT protected DELETE request
       const response = await authFetch(
-        `http://localhost:5000/books/${deletingBook._id}`,
+        `https://booknook-server-bzvz.onrender.com/books/${deletingBook._id}`,
         {
           method: "DELETE",
         }

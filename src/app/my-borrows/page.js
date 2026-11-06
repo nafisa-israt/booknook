@@ -27,7 +27,7 @@ function MyBorrowsContent() {
     const loadBorrows = async () => {
       try {
         const response = await authFetch(
-          "http://localhost:5000/borrows"
+          "https://booknook-server-bzvz.onrender.com/borrows"
         );
 
         if (!response.ok) {
@@ -63,7 +63,7 @@ function MyBorrowsContent() {
 
     try {
       const response = await authFetch(
-        `http://localhost:5000/borrows/${borrowId}`,
+        `https://booknook-server-bzvz.onrender.com/borrows/${borrowId}`,
         {
           method: "DELETE",
         }
