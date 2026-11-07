@@ -24,7 +24,7 @@ export default function Footer() {
           <h3 className="font-bold">Stay Connected</h3>
           <p className="mt-5 text-sm leading-7 text-white/60">A little library, a world of stories.</p>
           <p className="mt-4 text-sm text-[#d18a63]">
-            <a href="mailto:hello@boighor.com">hello@boighor.com</a>
+            <a href="https://github.com/nafisa-israt" target="_blank" rel="noreferrer">Contact the developer on GitHub</a>
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-5 text-sm text-white/70">
             <a href="https://github.com/nafisa-israt/booknook" target="_blank" rel="noreferrer" className="hover:text-[#d18a63]">GitHub</a>
@@ -35,7 +35,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="mx-auto mt-12 max-w-7xl border-t border-white/10 pt-6 text-center text-xs text-white/40">
-        © 2026 BookNook (BoiGhor). All rights reserved.
+        © 2026 BookNook. All rights reserved.
       </div>
     </footer>
   );
