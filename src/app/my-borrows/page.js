@@ -1,5 +1,6 @@
 
 
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -18,7 +19,6 @@ function MyBorrowsContent() {
   const [loading, setLoading] = useState(true);
   const [returningId, setReturningId] = useState(null);
 
-  // Load borrowed books using JWT
   useEffect(() => {
     if (!user?.email) return;
 
@@ -53,7 +53,6 @@ function MyBorrowsContent() {
     };
   }, [user?.email]);
 
-  // Return book using JWT
   const handleReturn = async (borrowId) => {
     if (!window.confirm("Are you sure you want to return this book?")) {
       return;
@@ -76,7 +75,11 @@ function MyBorrowsContent() {
       }
 
       setBorrows((previous) =>
-        previous.filter((borrow) => borrow._id !== borrowId)
+        previous.map((borrow) =>
+          borrow._id === borrowId
+            ? { ...borrow, status: "returned" }
+            : borrow
+        )
       );
 
       toast.success("Book returned successfully!");
@@ -159,22 +162,36 @@ function MyBorrowsContent() {
                     </td>
 
                     <td className="px-6 py-5">
-                      <span className="rounded-full bg-[#eaf0e9] px-3 py-1 text-xs font-semibold text-[#264735]">
-                        Borrowed
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                          borrow.status === "returned"
+                            ? "bg-gray-100 text-gray-600"
+                            : "bg-[#eaf0e9] text-[#264735]"
+                        }`}
+                      >
+                        {borrow.status === "returned"
+                          ? "Returned"
+                          : "Borrowed"}
                       </span>
                     </td>
 
                     <td className="px-6 py-5">
-                      <button
-                        onClick={() => handleReturn(borrow._id)}
-                        disabled={returningId === borrow._id}
-                        className="inline-flex items-center gap-2 rounded-lg bg-[#bd704d] px-4 py-2 text-sm font-semibold text-white hover:bg-[#a85d3d] disabled:opacity-50"
-                      >
-                        <RotateCcw size={15} />
-                        {returningId === borrow._id
-                          ? "Returning..."
-                          : "Return Book"}
-                      </button>
+                      {borrow.status === "borrowed" ? (
+                        <button
+                          onClick={() => handleReturn(borrow._id)}
+                          disabled={returningId === borrow._id}
+                          className="inline-flex items-center gap-2 rounded-lg bg-[#bd704d] px-4 py-2 text-sm font-semibold text-white hover:bg-[#a85d3d] disabled:opacity-50"
+                        >
+                          <RotateCcw size={15} />
+                          {returningId === borrow._id
+                            ? "Returning..."
+                            : "Return Book"}
+                        </button>
+                      ) : (
+                        <span className="text-sm text-gray-400">
+                          Completed
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}
