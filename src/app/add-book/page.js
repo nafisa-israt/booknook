@@ -138,7 +138,7 @@ export default function AddBookPage() {
             </h1>
 
             <p className="mt-3 text-[#77776b]">
-              Share your favorite books with the BoiGhor community.
+              Share your favorite books with the BookNook community.
             </p>
           </div>
 
@@ -313,7 +313,7 @@ export default function AddBookPage() {
 
               {loading
                 ? "Uploading & Adding Book..."
-                : "Add Book to BoiGhor"}
+                : "Add Book to BookNook"}
             </button>
           </form>
         </div>
