@@ -9,6 +9,11 @@ import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const router = useRouter();
+  const getCallbackURL = () => {
+    if (typeof window === "undefined") return "/";
+    const requested = new URLSearchParams(window.location.search).get("callbackUrl");
+    return requested && requested.startsWith("/") && !requested.startsWith("//") ? requested : "/";
+  };
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
@@ -22,14 +27,14 @@ export default function LoginPage() {
       const { error } = await authClient.signIn.email({
         email: form.email.value,
         password: form.password.value,
-        callbackURL: "/",
+        callbackURL: getCallbackURL(),
       });
 
       if (error) {
         toast.error(error.message || "Login failed");
       } else {
         toast.success("Login successful!");
-        router.push("/");
+        router.push(getCallbackURL());
         router.refresh();
       }
     } catch (error) {
