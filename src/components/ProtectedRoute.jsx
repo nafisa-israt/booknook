@@ -1,18 +1,19 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 export default function ProtectedRoute({ children }) {
   const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!isPending && !session) {
-      router.replace("/login");
+      router.replace(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
     }
-  }, [session, isPending, router]);
+  }, [session, isPending, router, pathname]);
 
   if (isPending || !session) {
     return (
