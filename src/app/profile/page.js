@@ -18,7 +18,7 @@ export default function ProfilePage() {
                 My Profile
               </h1>
               <p className="mt-2 text-sm text-[#8b8b78]">
-                Your personal information at BoiGhor
+                Your personal information at BookNook
               </p>
             </div>
 
