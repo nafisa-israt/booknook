@@ -11,6 +11,17 @@ import toast from "react-hot-toast";
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const handleGoogleRegister = async () => {
+    setGoogleLoading(true);
+    try {
+      await authClient.signIn.social({ provider: "google", callbackURL: "/" });
+    } catch (error) {
+      toast.error("Google sign-up failed!");
+      setGoogleLoading(false);
+    }
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -54,7 +65,7 @@ export default function RegisterPage() {
     <main className="min-h-screen bg-[#f8f6f0] px-5 py-16">
       <div className="mx-auto max-w-md rounded-3xl border border-[#e8e3d8] bg-white p-8 shadow-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-[#264735]">Join BoiGhor</h1>
+          <h1 className="text-3xl font-bold text-[#264735]">Join BookNook</h1>
           <p className="mt-2 text-sm text-[#77776b]">
             Create your account and start exploring books.
           </p>
@@ -85,6 +96,16 @@ export default function RegisterPage() {
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
+
+        <div className="my-5 flex items-center gap-3">
+          <div className="h-px flex-1 bg-[#e8e3d8]" />
+          <span className="text-xs text-[#999]">OR</span>
+          <div className="h-px flex-1 bg-[#e8e3d8]" />
+        </div>
+
+        <button type="button" onClick={handleGoogleRegister} disabled={googleLoading} className="w-full rounded-xl border border-[#ddd8cc] py-3 font-semibold text-[#263d32] hover:bg-[#f8f6f0] disabled:opacity-60">
+          {googleLoading ? "Connecting..." : "Continue with Google"}
+        </button>
 
         <p className="mt-6 text-center text-sm text-[#77776b]">
           Already have an account?{" "}
