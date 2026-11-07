@@ -2,7 +2,7 @@
 
 import { authClient } from "@/lib/auth-client";
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 function LoadingScreen() {
   return (
@@ -42,5 +42,9 @@ export default function ProtectedRoute({ children }) {
     return <LoadingScreen />;
   }
 
-  return <ProtectedRouteContent>{children}</ProtectedRouteContent>;
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <ProtectedRouteContent>{children}</ProtectedRouteContent>
+    </Suspense>
+  );
 }
