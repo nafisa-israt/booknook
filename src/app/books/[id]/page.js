@@ -149,6 +149,12 @@ function BookDetailsContent() {
             By {book.author}
           </p>
 
+          <div className="mt-4 rounded-xl bg-[#f8f6f0] p-4">
+            <p className="text-xs text-[#8b8b78]">Added By</p>
+            <p className="mt-1 font-semibold text-[#264735]">{book.addedBy || "BookNook Community"}</p>
+            {book.addedByEmail && <p className="mt-1 text-sm text-[#77776b]">{book.addedByEmail}</p>}
+          </div>
+
           <div className="my-7 h-px bg-[#e8e3d8]" />
 
           <h2 className="mb-3 font-bold text-[#264735]">
