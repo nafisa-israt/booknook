@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { authClient } from "@/lib/auth-client";
 import { User, Mail, Save } from "lucide-react";
@@ -12,13 +12,13 @@ function ProfileContent() {
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
   const [saving, setSaving] = useState(false);
-  const [initialized, setInitialized] = useState(false);
 
-  if (user && !initialized) {
-    setName(user.name || "");
-    setImage(user.image || "");
-    setInitialized(true);
-  }
+  useEffect(() => {
+    if (user) {
+      setName(user.name || "");
+      setImage(user.image || "");
+    }
+  }, [user?.id, user?.name, user?.image]);
 
   const handleUpdate = async (event) => {
     event.preventDefault();
@@ -30,7 +30,7 @@ function ProfileContent() {
     try {
       const { error } = await authClient.updateUser({
         name: name.trim(),
-        image: image.trim() || null,
+        ...(image.trim() ? { image: image.trim() } : {}),
       });
       if (error) throw new Error(error.message || "Profile update failed");
       toast.success("Profile updated successfully!");
@@ -54,11 +54,7 @@ function ProfileContent() {
           ) : (
             <>
               <div className="mb-8 flex justify-center">
-                <img
-                  src={image || user?.image || "https://i.pravatar.cc/150"}
-                  alt="Profile"
-                  className="h-28 w-28 rounded-full border-4 border-[#e8e3d8] object-cover"
-                />
+                <img src={image || user?.image || "https://i.pravatar.cc/150"} alt="Profile" className="h-28 w-28 rounded-full border-4 border-[#e8e3d8] object-cover" />
               </div>
               <form onSubmit={handleUpdate} className="space-y-5">
                 <div>
