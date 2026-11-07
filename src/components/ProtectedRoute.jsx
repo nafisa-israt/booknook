@@ -2,9 +2,17 @@
 
 import { authClient } from "@/lib/auth-client";
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export default function ProtectedRoute({ children }) {
+function LoadingScreen() {
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#264735] border-t-transparent" />
+    </div>
+  );
+}
+
+function ProtectedRouteContent({ children }) {
   const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
   const pathname = usePathname();
@@ -16,12 +24,23 @@ export default function ProtectedRoute({ children }) {
   }, [session, isPending, router, pathname]);
 
   if (isPending || !session) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#264735] border-t-transparent" />
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return children;
+}
+
+export default function ProtectedRoute({ children }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Keep Better Auth's session hook out of Next.js server prerendering.
+  if (!mounted) {
+    return <LoadingScreen />;
+  }
+
+  return <ProtectedRouteContent>{children}</ProtectedRouteContent>;
 }
