@@ -64,7 +64,7 @@ export default function LoginPage() {
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-[#264735]">Welcome Back</h1>
           <p className="mt-2 text-sm text-[#77776b]">
-            Login to continue exploring BoiGhor.
+            Login to continue exploring BookNook.
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export default function LoginPage() {
         </button>
 
         <p className="mt-6 text-center text-sm text-[#77776b]">
-          New to BoiGhor?{" "}
+          New to BookNook?{" "}
           <Link href="/register" className="font-semibold text-[#bd704d]">Create Account</Link>
         </p>
       </div>
