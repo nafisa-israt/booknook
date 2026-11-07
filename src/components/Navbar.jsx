@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { BookOpen, ChevronDown, LogOut, User } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
@@ -39,7 +40,7 @@ export default function Navbar() {
 
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-[#263d32]">
-              বইঘর<span className="text-[#c47751]">.</span>
+              BookNook<span className="text-[#c47751]">.</span>
             </h1>
             <p className="text-[9px] tracking-[3px] text-[#8b8b78]">
               YOUR LITTLE LIBRARY
@@ -81,9 +82,20 @@ export default function Navbar() {
               onClick={() => setDropdownOpen(!dropdownOpen)}
               className="flex items-center gap-2 rounded-full border border-[#e8e3d8] bg-white px-3 py-2"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#264735] text-sm font-bold text-white">
-                {user.name?.charAt(0).toUpperCase() || "U"}
-              </div>
+              {user.image ? (
+                <Image
+                  src={user.image}
+                  alt={user.name || "User profile"}
+                  width={32}
+                  height={32}
+                  unoptimized
+                  className="h-8 w-8 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#264735] text-sm font-bold text-white">
+                  {user.name?.charAt(0).toUpperCase() || "U"}
+                </div>
+              )}
 
               <span className="max-w-24 truncate text-sm font-semibold text-[#263d32]">
                 {user.name}
@@ -93,7 +105,11 @@ export default function Navbar() {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 mt-3 w-48 rounded-xl border border-[#e8e3d8] bg-white p-2 shadow-lg">
+              <div className="absolute right-0 mt-3 w-52 rounded-xl border border-[#e8e3d8] bg-white p-2 shadow-lg">
+                <div className="border-b border-[#eeeae0] px-3 py-2">
+                  <p className="truncate text-sm font-semibold text-[#263d32]">{user.name || "Reader"}</p>
+                  <p className="truncate text-xs text-[#85877b]">{user.email}</p>
+                </div>
                 <Link
                   href="/profile"
                   onClick={() => setDropdownOpen(false)}
