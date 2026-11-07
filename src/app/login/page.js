@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -9,11 +8,15 @@ import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const router = useRouter();
+
   const getCallbackURL = () => {
     if (typeof window === "undefined") return "/";
     const requested = new URLSearchParams(window.location.search).get("callbackUrl");
-    return requested && requested.startsWith("/") && !requested.startsWith("//") ? requested : "/";
+    return requested && requested.startsWith("/") && !requested.startsWith("//")
+      ? requested
+      : "/";
   };
+
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
@@ -50,7 +53,7 @@ export default function LoginPage() {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: getCallbackURL(),
       });
     } catch (error) {
       toast.error("Google login failed!");
