@@ -157,7 +157,7 @@ export default function Home() {
 
                   <div className="absolute bottom-8 right-8 hidden text-right text-white/70 md:block">
                     <p className="text-xs tracking-[3px]">
-                      BOIGHOR COLLECTION
+                      BOOKNOOK COLLECTION
                     </p>
                     <p className="mt-2 text-4xl font-light">
                       0{index + 1}
@@ -175,7 +175,7 @@ export default function Home() {
       {/* Intro */}
       <section className="mx-auto max-w-7xl px-5 py-20 text-center lg:px-10">
         <p className="mb-4 text-xs font-bold tracking-[4px] text-[#c47751]">
-          WELCOME TO BOIGHOR
+          WELCOME TO BOOKNOOK
         </p>
 
         <h2 className="text-3xl font-bold leading-snug md:text-5xl">
@@ -187,7 +187,7 @@ export default function Home() {
 
         <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 text-[#777c70] md:text-base">
           বই শুধু পড়ার বিষয় নয়, বই হলো অনুভূতি, অভিজ্ঞতা আর নতুন
-          কিছু জানার এক অনন্য মাধ্যম। আপনার প্রিয় বইটি খুঁজে নিন বইঘরে।
+          কিছু জানার এক অনন্য মাধ্যম। আপনার প্রিয় বইটি খুঁজে নিন BookNook-এ।
         </p>
       </section>
 
@@ -281,7 +281,7 @@ export default function Home() {
 
                 <div className="p-6">
                   <p className="text-xs text-[#bd704d]">
-                    BOIGHOR COLLECTION
+                    BOOKNOOK COLLECTION
                   </p>
 
                   <h3 className="mt-2 text-xl font-bold">
@@ -339,7 +339,7 @@ export default function Home() {
           <p className="mb-3 text-xs font-bold tracking-[3px] text-[#bd704d]">
             MORE THAN A LIBRARY
           </p>
-          <h2 className="text-3xl font-bold">কেন বইঘর?</h2>
+          <h2 className="text-3xl font-bold">কেন BookNook?</h2>
         </div>
 
         <div className="grid gap-8 md:grid-cols-3">
