@@ -1,10 +1,10 @@
-# 📚 BoiGhor – Online Book Management & Borrowing Platform
+# 📚 BookNook – Online Book Management & Borrowing Platform
 
-**BoiGhor** is a responsive online book management and borrowing platform built with Next.js. It allows users to explore books, manage their personal book collections, and borrow books through a simple and user-friendly interface.
+**BookNook** is a responsive online book management and borrowing platform built with Next.js. It allows users to explore books, manage their personal book collections, and borrow books through a simple and user-friendly interface.
 
 ## 🌐 Live Website
 
-[Visit BoiGhor](https://booknook-nafisa7.vercel.app/)
+[Visit BookNook](https://booknook-nafisa7.vercel.app/)
 
 ## ✨ Key Features
 
@@ -99,4 +99,4 @@ GitHub: [nafisa-israt](https://github.com/nafisa-israt)
 
 ---
 
-*BoiGhor – Explore, Manage, and Borrow Books.*
+*BookNook – Explore, Manage, and Borrow Books.*
